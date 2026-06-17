@@ -23,7 +23,9 @@ index.js                       Point d'entrée (manager WinCC OA)
 scripts/save-mapping.js        Outil : pousse un fichier JSON dans le DPE de config
 examples/mapping.example.json  Exemple de document de mapping
 examples/mapping.rfid.example.json  Exemple avec encodage RFID (champ réutilisé)
-examples/labels/               Gabarits ZPL prêts à l'emploi (texte, code-barres, QR, RFID, expédition)
+examples/mapping.gs1.example.json   Exemple GS1-128 (AIs 01/17/10)
+examples/labels/               Gabarits ZPL prêts à l'emploi (texte, code-barres, QR, RFID, GS1, expédition)
+examples/winccoa/              DPL + script CTRL pour créer le DPType/DP de config
 src/
   config.js                    Résolution du nom du DPE de config (-configDpe / env / défaut)
   logger.js                    Façade de log (WinccoaManager.logXxx ou console)
@@ -84,7 +86,9 @@ npm install
 ## Configuration (le DPE de mapping)
 
 Le manager a besoin d'**un seul DPE de type chaîne** (`string`) qui contient le
-document JSON de configuration. Son nom est résolu, par ordre de priorité :
+document JSON de configuration. Ce DPType/DP doit être créé **avant** le
+démarrage — utilisez le DPL ou le script CTRL fournis dans
+[`examples/winccoa/`](examples/winccoa/). Son nom est résolu, par ordre de priorité :
 
 1. argument de ligne de commande `-configDpe <nom>` (ou `--config-dpe <nom>`),
 2. variable d'environnement `ZEBRA_CONFIG_DPE`,
