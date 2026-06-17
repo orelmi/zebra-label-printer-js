@@ -1,12 +1,11 @@
-117
+# ascii dump of database
+
+# DpType
 TypeName
-{
-"_ZebraLabelPrinter"
-"_ZebraLabelPrinter" 1
-".config" 1
-"..mapping" 25
-}
-DpName
-{
-"_ZebraLabelPrinter" "_ZebraLabelPrinter"
-}
+_ZebraLabelPrinter._ZebraLabelPrinter	1#1
+	config	1#2
+		mapping	25#3
+
+# Datapoint/DpId
+DpName	TypeName	ID
+_ZebraLabelPrinter	_ZebraLabelPrinter	713
