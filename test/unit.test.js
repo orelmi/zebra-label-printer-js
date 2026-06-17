@@ -64,6 +64,17 @@ test('ZplTemplate can keep unknown placeholders and skip sanitizing', () => {
   assert.strictEqual(tpl.render({ a: '^X' }), '^X|{{b}}');
 });
 
+test('ZplTemplate logs the rendered content at debug level', () => {
+  const logged = [];
+  const logger = { debug: (...a) => logged.push(a) };
+  const tpl = new ZplTemplate('^XA^FD{{a}}^FS^XZ', { logger });
+  const out = tpl.render({ a: 'Hi' });
+  assert.strictEqual(out, '^XA^FDHi^FS^XZ');
+  assert.strictEqual(logged.length, 1);
+  assert.match(logged[0][0], /ZPL render/);
+  assert.ok(logged[0].includes(out), 'rendered ZPL is passed to the logger');
+});
+
 test('ZplTemplate substitutes a field used several times (print + RFID encode)', () => {
   // The same value is printed as human-readable text AND encoded into an RFID tag.
   const tpl = new ZplTemplate('^FO50,50^FD{{serial}}^FS\n^RFW,H^FD{{serial}}^FS\n^FD{{serial}}^FS');

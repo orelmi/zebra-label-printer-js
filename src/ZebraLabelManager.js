@@ -93,6 +93,7 @@ class ZebraLabelManager {
     this._mapper = new DataMapper(mapping.fields);
     this._template = new ZplTemplate(mapping.template, {
       sanitize: mapping.sanitizeValues !== false,
+      logger: this._logger,
     });
     this._printer = createPrinter(mapping);
 
@@ -251,9 +252,8 @@ class ZebraLabelManager {
     let zpl;
     try {
       const values = this._mapper.map(this._cache);
-      zpl = this._template.render(values);
       this._logger.debug('Mapped field values: %s', JSON.stringify(values));
-      this._logger.debug('Rendered ZPL (%d bytes):\n%s', zpl.length, zpl);
+      zpl = this._template.render(values); // render() emits the ZPL at debug level
     } catch (err) {
       this._logger.severe('Failed to render label: %s', err.message);
       this._writeStatus(`render error: ${err.message}`);
