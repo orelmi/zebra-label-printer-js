@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "printMode": "tcp",
+  "tcp": {
+    "host": "192.168.1.50",
+    "port": 9100,
+    "timeoutMs": 5000
+  },
+  "encoding": "latin1",
+  "sanitizeValues": true,
+  "trigger": {
+    "dpe": "System1:Gs1Label.cmd.print",
+    "mode": "onTrue",
+    "resetAfterPrint": true
+  },
+  "status": {
+    "dpe": "System1:Gs1Label.status"
+  },
+  "template": "^XA\n^CI28\n^PW609\n^LL406\n^BY2,2,140\n^FO40,50^BCN,140,N,N,N^FD>801{{gtin}}17{{expiry}}10{{lot}}^FS\n^CF0,28\n^FO40,210^FD(01){{gtin}}  (17){{expiry}}  (10){{lot}}^FS\n^FO40,260^FD{{product}}^FS\n^PQ{{qty}}\n^XZ",
+  "fields": [
+    { "name": "gtin", "dpe": "System1:Gs1Label.gtin", "default": "00000000000000", "transform": { "type": "padStart", "length": 14, "pad": "0" } },
+    { "name": "expiry", "dpe": "System1:Gs1Label.expiry", "default": "300101" },
+    { "name": "lot", "dpe": "System1:Gs1Label.lot", "default": "LOT0", "transform": "upper" },
+    { "name": "product", "dpe": "System1:Gs1Label.product", "default": "N/A", "transform": "trim" },
+    { "name": "qty", "dpe": "System1:Gs1Label.quantity", "default": "1", "transform": "int" }
+  ]
+}
