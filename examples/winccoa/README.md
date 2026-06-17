@@ -25,10 +25,12 @@ WCCOAascii -in _ZebraLabelPrinter.dpl
 
 ou depuis GEDI : *System Management → ASCII → Import*.
 
-> ⚠️ Le format ASCII WinCC OA est **dépendant de la version**. La première ligne
-> (`117`) est le numéro de version du format ; ajustez-la si votre installation
-> attend une autre valeur, ou utilisez la méthode B. Le type d'élément `25`
-> correspond à `string` (`1` = nœud structure).
+> Format du fichier : en-tête `# ascii dump of database`, puis la section
+> `# DpType` (`TypeName`) où l'arbre est indenté par **tabulations** et chaque
+> élément porte `type#id` (`1` = nœud structure, `25` = `string`), enfin la
+> section `# Datapoint/DpId` (`DpName  TypeName  ID`). L'`ID` (`713`) est
+> l'identifiant de DP ; à l'import, WinCC OA l'attribue ou le réutilise. Si cet
+> ID est déjà pris sur votre système, utilisez la méthode B.
 
 ## Méthode B — Script CTRL (`create_zebra_config.ctl`) — recommandé
 
