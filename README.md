@@ -178,6 +178,37 @@ enregistré dans le DPE.
 
 ---
 
+## Logs et débogage
+
+Par défaut, le manager logge en niveaux **info / warning / severe** via les
+helpers WinCC OA (`logInfo` / `logWarning` / `logSevere`). Un **log de debug**
+détaillé (mapping appliqué, chaque mise à jour de DPE, évaluation du trigger,
+valeurs mappées et **ZPL rendu**) peut être activé.
+
+**Activer le debug** — au choix :
+
+```bash
+node index.js --debug                       # option de ligne de commande
+ZEBRA_DEBUG=1 node index.js                 # variable d'environnement (1/true/on/yes)
+```
+
+Dans la console WinCC OA, ajoutez `--debug` à la ligne d'options du manager
+JavaScript (*Console → propriétés du manager → options*).
+
+**Où s'affiche le log :**
+
+- **Dans WinCC OA** : les messages partent dans le **Log Viewer** (GEDI →
+  *Log Viewer*) et dans le fichier de log du projet (`<projet>/log/`). Le debug
+  passe par `logDebugF` (repli sur `logInfo` si indisponible).
+- **Hors WinCC OA** (tests, exécution locale) : tout sort sur la **console**
+  (`stdout`/`stderr`), préfixé `[ZebraLabel]` (les lignes debug portent `DEBUG`).
+
+> Pour le niveau de debug du *runtime* du manager JavaScript lui-même (côté
+> WinCC OA), vous pouvez aussi passer l'option standard `-dbg <flags>` du manager
+> en plus du `--debug` applicatif ci-dessus.
+
+---
+
 ## Tests
 
 ```bash

@@ -9,6 +9,27 @@ const { MappingStore, validateMapping } = require('../src/mapping/MappingStore')
 const { createPrinter } = require('../src/printer/PrinterFactory');
 const { TcpPrinter } = require('../src/printer/TcpPrinter');
 const { SpoolerPrinter } = require('../src/printer/SpoolerPrinter');
+const { Logger } = require('../src/logger');
+
+test('Logger.debug is gated and routed to logDebugF when available', () => {
+  const calls = { debug: [], info: [] };
+  const fakeWinccoa = {
+    logInfo: (m) => calls.info.push(m),
+    logDebugF: (m) => calls.debug.push(m),
+  };
+
+  const off = new Logger(fakeWinccoa, '[t]', false);
+  off.debug('hidden');
+  assert.strictEqual(calls.debug.length, 0, 'debug suppressed when disabled');
+
+  const on = new Logger(fakeWinccoa, '[t]', true);
+  on.debug('shown %s', 'x');
+  assert.strictEqual(calls.debug.length, 1, 'debug routed to logDebugF when enabled');
+
+  on.setDebug(false);
+  on.debug('hidden again');
+  assert.strictEqual(calls.debug.length, 1);
+});
 
 test('DataMapper applies defaults and transforms', () => {
   const mapper = new DataMapper([
