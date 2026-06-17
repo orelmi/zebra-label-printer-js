@@ -43,6 +43,16 @@ test('ZplTemplate can keep unknown placeholders and skip sanitizing', () => {
   assert.strictEqual(tpl.render({ a: '^X' }), '^X|{{b}}');
 });
 
+test('ZplTemplate substitutes a field used several times (print + RFID encode)', () => {
+  // The same value is printed as human-readable text AND encoded into an RFID tag.
+  const tpl = new ZplTemplate('^FO50,50^FD{{serial}}^FS\n^RFW,H^FD{{serial}}^FS\n^FD{{serial}}^FS');
+  assert.deepStrictEqual(tpl.placeholders(), ['serial']);
+  assert.strictEqual(
+    tpl.render({ serial: 'SN-001' }),
+    '^FO50,50^FDSN-001^FS\n^RFW,H^FDSN-001^FS\n^FDSN-001^FS',
+  );
+});
+
 test('validateMapping rejects bad documents', () => {
   assert.throws(() => validateMapping({}), /printMode/);
   assert.throws(() => validateMapping({ printMode: 'tcp', template: 't', fields: [] }), /tcp.host/);
