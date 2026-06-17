@@ -22,6 +22,8 @@ chaud : le manager surveille ce DPE et recharge le mapping sans redémarrage.
 index.js                       Point d'entrée (manager WinCC OA)
 scripts/save-mapping.js        Outil : pousse un fichier JSON dans le DPE de config
 examples/mapping.example.json  Exemple de document de mapping
+examples/mapping.rfid.example.json  Exemple avec encodage RFID (champ réutilisé)
+examples/labels/               Gabarits ZPL prêts à l'emploi (texte, code-barres, QR, RFID, expédition)
 src/
   config.js                    Résolution du nom du DPE de config (-configDpe / env / défaut)
   logger.js                    Façade de log (WinccoaManager.logXxx ou console)
@@ -117,6 +119,10 @@ document JSON de configuration. Son nom est résolu, par ordre de priorité :
 ```
 
 - **`fields[].name`** est le nom du *placeholder* `{{name}}` utilisé dans le gabarit.
+  Un même champ peut apparaître **plusieurs fois** dans le gabarit : toutes les
+  occurrences sont substituées. C'est utile pour, par ex., **imprimer** une donnée
+  *et* l'**encoder dans un tag RFID** (`^RFW`) à partir d'une seule valeur source —
+  voir `examples/labels/04-rfid-encode.zpl` et `examples/mapping.rfid.example.json`.
 - **`fields[].dpe`** est le DPE source dont la valeur alimente le champ.
 - **`fields[].default`** est utilisé si la valeur du DPE est vide/absente.
 - **`fields[].transform`** (optionnel) : `"trim"`, `"upper"`, `"lower"`, `"int"`,
