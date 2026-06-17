@@ -20,14 +20,17 @@ class ZplTemplate {
    * @param {boolean} [options.sanitize=true] strip ^ and ~ from values
    * @param {boolean} [options.keepUnknown=false] leave unknown {{tokens}} as-is
    *        (default replaces them with an empty string)
+   * @param {import('../logger').Logger} [options.logger] optional logger; the
+   *        rendered ZPL is emitted at debug level when provided
    */
-  constructor(template, { sanitize = true, keepUnknown = false } = {}) {
+  constructor(template, { sanitize = true, keepUnknown = false, logger = null } = {}) {
     if (typeof template !== 'string') {
       throw new Error('ZPL template must be a string.');
     }
     this._template = template;
     this._sanitize = sanitize;
     this._keepUnknown = keepUnknown;
+    this._logger = logger;
   }
 
   /** @returns {string[]} placeholder names referenced by the template */
@@ -46,7 +49,7 @@ class ZplTemplate {
    * @returns {string} the rendered ZPL
    */
   render(values) {
-    return this._template.replace(PLACEHOLDER, (whole, name) => {
+    const result = this._template.replace(PLACEHOLDER, (whole, name) => {
       if (!Object.prototype.hasOwnProperty.call(values, name)) {
         return this._keepUnknown ? whole : '';
       }
@@ -54,6 +57,10 @@ class ZplTemplate {
       const str = raw == null ? '' : String(raw);
       return this._sanitize ? ZplTemplate.sanitizeValue(str) : str;
     });
+    if (this._logger && typeof this._logger.debug === 'function') {
+      this._logger.debug('ZPL render (%d bytes):\n%s', result.length, result);
+    }
+    return result;
   }
 
   /**
