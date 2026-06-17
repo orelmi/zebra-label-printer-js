@@ -1,0 +1,36 @@
+{
+  "name": "zebra-label-printer-js",
+  "version": "1.0.0",
+  "description": "WinCC OA JavaScript manager that reads data from datapoints (dpConnect) and prints ZPL labels on Zebra printers, either directly over TCP/IP or through the Windows print spooler. The DPE-to-field mapping is stored as JSON inside a configuration DPE.",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "save-mapping": "node scripts/save-mapping.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "winccoa",
+    "wincc-oa",
+    "zebra",
+    "zpl",
+    "label",
+    "printer",
+    "scada",
+    "dpconnect",
+    "spooler",
+    "tcp"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@thiagoelg/node-printer": "^0.6.2"
+  },
+  "comments": {
+    "winccoa-manager": "Provided by the WinCC OA installation, NOT on the public npm registry. Install it from the local path, e.g.: npm install file:/opt/WinCC_OA/3.21/javascript/winccoa-manager (Linux) or npm install file:C:/Siemens/Automation/WinCC_OA/3.21/javascript/winccoa-manager (Windows). The manager lazy-requires it at runtime.",
+    "@thiagoelg/node-printer": "Only needed for the Windows spooler print mode. It is a native addon (node-gyp); it is declared as optional so installation does not fail on hosts without build tools. It is lazy-required only when spooler mode is used."
+  }
+}

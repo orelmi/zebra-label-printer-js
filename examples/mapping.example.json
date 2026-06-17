@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "printMode": "tcp",
+  "tcp": {
+    "host": "192.168.1.50",
+    "port": 9100,
+    "timeoutMs": 5000
+  },
+  "spooler": {
+    "printerName": "ZDesigner GK420t"
+  },
+  "encoding": "latin1",
+  "sanitizeValues": true,
+  "trigger": {
+    "dpe": "System1:Label.cmd.print",
+    "mode": "onTrue",
+    "resetAfterPrint": true
+  },
+  "status": {
+    "dpe": "System1:Label.status"
+  },
+  "template": "^XA\n^CF0,30\n^FO40,40^FDProduct: {{product}}^FS\n^FO40,90^FDLot: {{lot}}^FS\n^FO40,140^FDDate: {{date}}^FS\n^FO40,200^BY2\n^BCN,100,Y,N,N^FD{{barcode}}^FS\n^PQ{{qty}}\n^XZ",
+  "fields": [
+    { "name": "product", "dpe": "System1:Label.product", "default": "N/A", "transform": "trim" },
+    { "name": "lot", "dpe": "System1:Label.lot", "default": "", "transform": "upper" },
+    { "name": "barcode", "dpe": "System1:Label.ean", "default": "0000000000000" },
+    { "name": "qty", "dpe": "System1:Label.quantity", "default": "1", "transform": "int" },
+    { "name": "date", "dpe": "System1:Label.date", "default": "now", "transform": { "type": "date", "format": "date" } }
+  ]
+}
