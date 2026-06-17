@@ -53,7 +53,14 @@ function loadConfig(overrides = {}, argv = process.argv, env = process.env) {
     overrides.debounceMs ?? env.ZEBRA_DEBOUNCE_MS ?? 250,
   );
 
-  return { configDpe, debounceMs };
+  // Debug logging: enabled by the `--debug` flag, the `ZEBRA_DEBUG` env var
+  // (1/true/on/yes), or explicitly via overrides.
+  const debug =
+    overrides.debug ??
+    (argv.includes('--debug') || argv.includes('-debug') ||
+      /^(1|true|on|yes)$/i.test(String(env.ZEBRA_DEBUG || '')));
+
+  return { configDpe, debounceMs, debug };
 }
 
 module.exports = { loadConfig, DEFAULT_CONFIG_DPE };

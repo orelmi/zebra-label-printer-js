@@ -18,15 +18,27 @@ class Logger {
   /**
    * @param {object} [winccoa] a WinccoaManager instance (optional)
    * @param {string} [prefix] short tag prepended to console messages
+   * @param {boolean} [debug] enable debug-level output
    */
-  constructor(winccoa = null, prefix = '[ZebraLabel]') {
+  constructor(winccoa = null, prefix = '[ZebraLabel]', debug = false) {
     this._winccoa = winccoa;
     this._prefix = prefix;
+    this._debug = Boolean(debug);
   }
 
   /** @param {object} winccoa */
   attachWinccoa(winccoa) {
     this._winccoa = winccoa;
+  }
+
+  /** @param {boolean} enabled */
+  setDebug(enabled) {
+    this._debug = Boolean(enabled);
+  }
+
+  /** @returns {boolean} */
+  get debugEnabled() {
+    return this._debug;
   }
 
   info(message, ...args) {
@@ -35,6 +47,23 @@ class Logger {
     } else {
       // eslint-disable-next-line no-console
       console.log(`${this._prefix} ${util.format(message, ...args)}`);
+    }
+  }
+
+  /**
+   * Debug-level message. Suppressed unless debug mode is enabled. Routed to the
+   * WinCC OA debug log (logDebugF) when available, otherwise to the console.
+   */
+  debug(message, ...args) {
+    if (!this._debug) return;
+    if (this._winccoa && typeof this._winccoa.logDebugF === 'function') {
+      this._winccoa.logDebugF(message, ...args);
+    } else if (this._winccoa && typeof this._winccoa.logInfo === 'function') {
+      // Fallback: emit as info so it still reaches the WinCC OA log.
+      this._winccoa.logInfo(`DEBUG ${message}`, ...args);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`${this._prefix} DEBUG ${util.format(message, ...args)}`);
     }
   }
 

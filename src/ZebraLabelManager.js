@@ -120,6 +120,14 @@ class ZebraLabelManager {
         true,
       );
     }
+
+    this._logger.debug(
+      'Mapping applied: mode=%s, fields=[%s], trigger=%s, debounceMs=%d',
+      mapping.printMode,
+      dpes.join(', '),
+      triggerDpe ? `${triggerDpe} (${(mapping.trigger && mapping.trigger.mode) || 'onTrue'})` : 'none',
+      this._debounceMs,
+    );
   }
 
   /** Logs a warning for any DPE referenced by the mapping that does not exist. */
@@ -149,9 +157,11 @@ class ZebraLabelManager {
   _onFieldUpdate(names, values) {
     for (let i = 0; i < names.length; i += 1) {
       this._cache.set(names[i], values[i]);
+      this._logger.debug('Field update: %s = %s', names[i], String(values[i]));
     }
     if (!this._fieldsInitialized) {
       this._fieldsInitialized = true; // initial snapshot: prime cache, do not print
+      this._logger.debug('Initial field snapshot cached (%d DPE).', names.length);
       return;
     }
     // Auto-print only when no explicit trigger DPE is configured.
@@ -178,6 +188,13 @@ class ZebraLabelManager {
     else if (mode === 'onChange') shouldPrint = value !== prev;
     else shouldPrint = ZebraLabelManager._truthy(value) && !ZebraLabelManager._truthy(prev);
 
+    this._logger.debug(
+      'Trigger update: value=%s prev=%s mode=%s -> print=%s',
+      String(value),
+      String(prev),
+      mode,
+      shouldPrint,
+    );
     if (!shouldPrint) return;
 
     this._requestPrint()
@@ -235,6 +252,8 @@ class ZebraLabelManager {
     try {
       const values = this._mapper.map(this._cache);
       zpl = this._template.render(values);
+      this._logger.debug('Mapped field values: %s', JSON.stringify(values));
+      this._logger.debug('Rendered ZPL (%d bytes):\n%s', zpl.length, zpl);
     } catch (err) {
       this._logger.severe('Failed to render label: %s', err.message);
       this._writeStatus(`render error: ${err.message}`);

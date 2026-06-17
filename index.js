@@ -15,12 +15,13 @@ const { ZebraLabelManager } = require('./src/ZebraLabelManager');
 
 async function main() {
   const config = loadConfig();
-  const logger = new Logger();
+  const logger = new Logger(null, '[ZebraLabel]', config.debug);
 
   let winccoaClient;
   try {
     winccoaClient = new WinccoaClient({ logger });
     logger.attachWinccoa(winccoaClient.manager);
+    if (config.debug) logger.debug('Debug logging enabled.');
   } catch (err) {
     logger.severe('Cannot initialise WinCC OA manager: %s', err.message);
     process.exit(1);
